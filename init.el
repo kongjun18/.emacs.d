@@ -77,9 +77,23 @@
 	:map company-active-map
               ("TAB" . company-select-next)
               ("<backtab>" . company-select-previous)))
-(add-hook 'after-init-hook 'global-company-mode)
 ; TODO: preserve <RET>
-(add-hook 'after-init-hook 'company-tng-mode)
+
+(use-package company-quickhelp
+  :ensure t
+  :init
+  (setq company-quickhelp-delay 0.001)
+  :after company)
+
+(defun customed-compnay-mode ()
+  "add all company-related modes"
+  (global-company-mode)
+  ; company-tng-mode must be load before company-quickhelp-mode,
+  ; otherwise, company-tng-mode doesn't work.
+  (company-tng-mode)
+  (company-quickhelp-mode)
+ )
+(add-hook 'after-init-hook 'customed-compnay-mode)
 
 (use-package eglot
   :after company
