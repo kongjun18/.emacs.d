@@ -1,0 +1,17 @@
+* TODO company-tng-mode perserves RET
+* TODO company-mode trigger completion menu when backspace
+* TODO tune LSP keybinding
+* TODO automaticlly generates ctags like gutentags.vim
+* TODO citra
+* TODO FIXME: K display a new window, which is identical to Emacs-builtin window
+* TODO Vim quickfix in Emacs?
+* TODO tune eglot diagnostic symbol
+* TODO shell in emacs
+* TODO tramp
+* TODO linter utilities like none-ls.nvim
+* TODO spell check 
+* TODO org-mode
+* TODO org-roam
+* TODO magit
+
+
