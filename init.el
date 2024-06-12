@@ -87,18 +87,25 @@
 (use-package general
    :ensure t
 )
-
 (require 'general)
 (general-create-definer my-leader-def
     :states '(normal visual emacs)
     :prefix "SPC")
-
 
 (use-package evil-collection
   :after evil
   :ensure t
   :config
   (evil-collection-init))
+
+(use-package evil-nerd-commenter
+  :ensure t
+  :config
+  (my-leader-def "cc" 'evilnc-comment-or-uncomment-lines)
+  (my-leader-def "cy" 'evilnc-copy-and-comment-lines)
+  (my-leader-def "cs" 'evilnc-comment-box))
+
+
 
 ;; --- Company ---
 
