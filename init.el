@@ -180,6 +180,7 @@
 
 (use-package fcitx
   :ensure t
+  :if (eq system-type 'gnu/linux)
   :init
   (setq fcitx-remote-command "fcitx5-remote")
   :config
