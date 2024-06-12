@@ -216,7 +216,7 @@
 	("C-M-i"    . completion-at-point))
   :config
   (org-roam-setup))
-
+;; FIXME(kj): Why it doesn't work in :config
 (progn
   (my-leader-def "nl" 'org-roam-buffer-toggle)
   (my-leader-def "nf" 'org-roam-node-find)
@@ -246,3 +246,7 @@
 (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
 (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
 (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+;; ---- magit ----
+(use-package magit
+  :ensure t)
