@@ -67,6 +67,11 @@
   (add-to-list 'global-mode-string '("" mode-line-keycast))
   (keycast-mode-line-mode))
 
+
+;; ---- Evil ----
+;; Enable evil system clipboard
+(setq x-select-enable-clipboard nil)
+
 (use-package evil
   :ensure t
   :init
