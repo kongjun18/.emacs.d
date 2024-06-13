@@ -149,9 +149,11 @@
               ("C-t" . company-search-toggle-filtering)
               ("TAB" . company-select-next)
               ("<backtab>" . company-select-previous)
+              ("RET" . company-complete)
     :map company-active-map
               ("TAB" . company-select-next)
-              ("<backtab>" . company-select-previous)))
+              ("<backtab>" . company-select-previous))
+              ("RET" . company-complete))
 ; TODO: preserve <RET>
 
 (use-package company-quickhelp
