@@ -50,8 +50,6 @@
       modus-themes-tabs-accented t
       modus-themes-paren-match '(bold intense)
       modus-themes-prompts '(bold intense)
-      ;; FIXME(kj): Warrning
-      ;; modus-themes-completions 'opinionated
       modus-themes-org-blocks 'tinted-background
       modus-themes-scale-headings t
       modus-themes-region '(bg-only)
@@ -219,7 +217,8 @@
 ;; ---- org-mode ----
 (use-package fcitx
   :straight t
-  :if (eq system-type 'gnu/linux)
+  ;; Only enable fcitx.el on Linux which not runs in SSH
+  :if ( and ( = (length (getenv "SSH_TTY")) 0) (eq system-type 'gnu/linux) )
   :init
   (setq fcitx-remote-command "fcitx5-remote")
   :config
