@@ -296,7 +296,15 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
-;; Example configuration for Consult
+(use-package vertico
+  :straight t
+  :config
+  (vertico-mode 1))
+(use-package marginalia
+  :straight t
+  :config
+  (marginalia-mode))
+  
 (use-package consult
   :straight t
   ;; Enable automatic preview at point in the *Completions* buffer. This is
