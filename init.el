@@ -23,23 +23,32 @@
 (setq locale-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-(straight-use-package 'use-package)
-(setq straight-use-package-by-default t)
+(setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                         ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+                         ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
+(package-initialize)
+(when (not package-archive-contents)
+  (package-refresh-contents))
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+; (defvar bootstrap-version)
+; (let ((bootstrap-file
+;        (expand-file-name
+;         "straight/repos/straight.el/bootstrap.el"
+;         (or (bound-and-true-p straight-base-dir)
+;             user-emacs-directory)))
+;       (bootstrap-version 7))
+;   (unless (file-exists-p bootstrap-file)
+;     (with-current-buffer
+;         (url-retrieve-synchronously
+;          "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+;          'silent 'inhibit-cookies)
+;       (goto-char (point-max))
+;       (eval-print-last-sexp)))
+;   (load bootstrap-file nil 'nomessage))
+; (straight-use-package 'use-package)
+; (setq straight-use-package-by-default t)
 
 ;; ---- Modus Theme ----
 ;; Configure the Modus Themes' appearance
@@ -64,17 +73,17 @@
 
 
 (use-package treesit-auto
-  :straight t
+  :ensure t
   :demand t
   :config
   (global-treesit-auto-mode))
 
 (use-package which-key
-  :straight t
+  :ensure t
   :config (which-key-mode))
 
 (use-package keycast
-  :straight t
+  :ensure t
   :config
   (add-to-list 'global-mode-string '("" mode-line-keycast))
   (keycast-mode-line-mode))
@@ -85,7 +94,7 @@
 (setq x-select-enable-clipboard nil)
 
 (use-package evil
-  :straight t
+  :ensure t
   :init
   (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
   (setq evil-want-keybinding nil)
@@ -97,7 +106,7 @@
     (define-key evil-motion-state-map (kbd "RET") nil)))
 
 (use-package general
-   :straight t
+   :ensure t
 )
 (require 'general)
 (general-create-definer my-leader-def
@@ -106,12 +115,12 @@
 
 (use-package evil-collection
   :after evil
-  :straight t
+  :ensure t
   :config
   (evil-collection-init))
 
 (use-package evil-nerd-commenter
-  :straight t
+  :ensure t
   :config
   (my-leader-def "cc" 'evilnc-comment-or-uncomment-lines)
   (my-leader-def "cy" 'evilnc-copy-and-comment-lines)
@@ -121,102 +130,97 @@
 
 ;; --- Company ---
 
-;; (use-package company
-;;   :init
-;;   ;QUESTION: Why not work?
-;;   ;;(setq company-global-modes '(not erc-mode message-mode eshell-mode))
-;;   (setq company-selection-wrap-around t)
-;;   (add-hook 'emacs-lisp-mode-hook 'company-mode)
-;;   (add-hook 'emacs-go-mode-hook 'company-mode)
-;;   :straight t
-;;   :config
-;;   (company-mode)
-;;   (setq company-idle-delay 0)
-;;   ;(setq company-global-modes '(not processing-mode text-mode)) ;; Not use company on those modes
-;;   (add-to-list 'company-backends 'company-elisp)
-;;   (add-to-list 'company-backends 'company-go)
-;;   (add-to-list 'company-backends 'company-dict)
-;;   ; (when (boundp 'company-backends)
-;;     ; (make-local-variable 'company-backends)
-;;     ; ;; remove
-;;     ; (setq company-backends (delete 'company-clang company-backends))
-;;     ; ;; add
-;;     ; ;;(add-to-list 'company-backends 'company-dabbrev)
-;;     ; )
-;;   :bind (:map company-search-map
-;;               ("C-t" . company-search-toggle-filtering)
-;;               ("TAB" . company-select-next)
-;;               ("<backtab>" . company-select-previous)
-;; 	:map company-active-map
-;;               ("TAB" . company-select-next)
-;;               ("<backtab>" . company-select-previous)))
-;; ; TODO: preserve <RET>
+(use-package company
+  :init
+  ;QUESTION: Why not work?
+  ;;(setq company-global-modes '(not erc-mode message-mode eshell-mode))
+  (setq company-selection-wrap-around t)
+  (add-hook 'emacs-lisp-mode-hook 'company-mode)
+  (add-hook 'emacs-go-mode-hook 'company-mode)
+  :ensure t
+  :config
+  (company-mode)
+  (setq company-idle-delay 0)
+  ;(setq company-global-modes '(not processing-mode text-mode)) ;; Not use company on those modes
+  (add-to-list 'company-backends 'company-elisp)
+  (add-to-list 'company-backends 'company-go)
+  (add-to-list 'company-backends 'company-dict)
+  :bind (:map company-search-map
+              ("C-t" . company-search-toggle-filtering)
+              ("TAB" . company-select-next)
+              ("<backtab>" . company-select-previous)
+    :map company-active-map
+              ("TAB" . company-select-next)
+              ("<backtab>" . company-select-previous)))
+; TODO: preserve <RET>
 
-;; (use-package company-quickhelp
-;;   :straight t
-;;   :init
-;;   (setq company-quickhelp-delay 0.001)
-;;   :after company)
+(use-package company-quickhelp
+  :ensure t
+  :init
+  (setq company-quickhelp-delay 0.001)
+  :after company)
 
-;; (defun customed-compnay-mode ()
-;;   "add all company-related modes"
-;;   (global-company-mode)
-;;   ; company-tng-mode must be load before company-quickhelp-mode,
-;;   ; otherwise, company-tng-mode doesn't work.
-;;   (company-tng-mode)
-;;   (company-quickhelp-mode))
-;; (add-hook 'after-init-hook 'customed-compnay-mode)
+(defun customed-compnay-mode ()
+  "add all company-related modes"
+  (global-company-mode)
+  ; company-tng-mode must be load before company-quickhelp-mode,
+  ; otherwise, company-tng-mode doesn't work.
+  (company-tng-mode)
+  (company-quickhelp-mode))
+(add-hook 'after-init-hook 'customed-compnay-mode)
 
-;; (use-package eglot
-;;   :after company
-;;   :straight t
-;;   :config
-;;   (add-hook 'go-mode-hook 'eglot-ensure))
-;; (defun project-find-go-module (dir)
-;;   (when-let ((root (locate-dominating-file dir "go.mod")))
-;;     (cons 'go-module root)))
-;; (cl-defmethod project-root ((project (head go-module)))
-;;   (cdr project))
-;; (add-hook 'project-find-functions #'project-find-go-module)
-;; (defun eglot-format-buffer-on-save ()
-;;   (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
-;; (add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
+(use-package consult-eglot
+    :ensure t)
+(use-package eglot
+  :after company
+  :ensure t
+  :config
+  (add-hook 'go-mode-hook 'eglot-ensure))
+(defun project-find-go-module (dir)
+  (when-let ((root (locate-dominating-file dir "go.mod")))
+    (cons 'go-module root)))
+(cl-defmethod project-root ((project (head go-module)))
+  (cdr project))
+(add-hook 'project-find-functions #'project-find-go-module)
+(defun eglot-format-buffer-on-save ()
+  (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
+(add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
 
-;; (use-package company-dict
-;;   :straight t
-;;   :config
-;;   (setq company-dict-dir (concat user-emacs-directory "dict/"))
-;;   :bind (:map evil-insert-state-map
-;;               ("C-x C-k" . company-dict))
-;; )
+(use-package company-dict
+  :ensure t
+  :config
+  (setq company-dict-dir (concat user-emacs-directory "dict/"))
+  :bind (:map evil-insert-state-map
+              ("C-x C-k" . company-dict))
+)
 
 ;; ---- lsp-bridge ----
 (use-package yasnippet
-  :straight t
+  :ensure t
   :config
   (yas-global-mode 1))
 
 (use-package markdown-mode
-  :straight t
+  :ensure t
   :init (setq markdown-command "multimarkdown"))
 
 (use-package go-mode
-  :straight t)
+  :ensure t)
 
-(use-package lsp-bridge
-  :straight '(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
-            :files (:defaults "*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources")
-            :build (:not compile))
-  :init
-  (setq acm-enable-preview t)
-  (global-lsp-bridge-mode)
-  :config
-  (define-key acm-mode-map [tab] 'acm-select-next)
-  (define-key acm-mode-map [backtab] 'acm-select-prev))
+; (use-package lsp-bridge
+;   :straight '(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
+;             :files (:defaults "*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources")
+;             :build (:not compile))
+;   :init
+;   (setq acm-enable-preview t)
+;   (global-lsp-bridge-mode)
+;   :config
+;   (define-key acm-mode-map [tab] 'acm-select-next)
+;   (define-key acm-mode-map [backtab] 'acm-select-prev))
 
 ;; ---- org-mode ----
 (use-package fcitx
-  :straight t
+  :ensure t
   ;; Only enable fcitx.el on Linux which not runs in SSH
   :if ( and ( = (length (getenv "SSH_TTY")) 0) (eq system-type 'gnu/linux) )
   :init
@@ -245,7 +249,7 @@
 	))
 
 (use-package org-roam
-  :straight t
+  :ensure t
   :custom
     (org-roam-directory "~/org")
     (org-roam-completion-everywhere t)
@@ -261,7 +265,7 @@
   (my-leader-def "ni" 'org-roam-node-insert))
 
 (use-package org-bullets
-  :straight t
+  :ensure t
   :after org
   :hook (org-mode . org-bullets-mode)
   :custom
@@ -287,7 +291,7 @@
 
 ;; ---- magit ----
 (use-package magit
-  :straight t)
+  :ensure t)
 
 ;; ---- utilities ----
 (use-package orderless
@@ -297,16 +301,16 @@
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package vertico
-  :straight t
+  :ensure t
   :config
   (vertico-mode 1))
 (use-package marginalia
-  :straight t
+  :ensure t
   :config
   (marginalia-mode))
-  
+
 (use-package consult
-  :straight t
+  :ensure t
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
   :hook (completion-list-mode . consult-preview-at-point-mode)
@@ -344,9 +348,10 @@
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<") ;; "C-+"
 )
+
 ;; ---- Obsidian ----
 (use-package obsidian
-  :straight t
+  :ensure t
   :demand t
   :config
   (obsidian-specify-path "~/OneDrive/Obsidian")
@@ -371,16 +376,3 @@
   ("C-c C-b" . obsidian-backlink-jump)
   ;; If you prefer you can use `obsidian-insert-link'
   ("C-c C-l" . obsidian-insert-wikilink)))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(yasnippet obsidian magit evil-nerd-commenter which-key treesit-auto org-roam org-bullets keycast go-mode general fcitx evil-collection company-quickhelp company-dict citre)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
