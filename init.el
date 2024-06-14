@@ -1,4 +1,3 @@
-(server-start)
 (setq inhibit-startup-message t)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -128,22 +127,19 @@
 
 
 ;; --- Company ---
-
+(defun customed-compnay-mode ()
+  ; company-tng-mode must be load before company-quickhelp-mode,
+  ; otherwise, company-tng-mode doesn't work.
+  (company-tng-mode)
+  (company-quickhelp-mode))
 (use-package company
-  :init
-  ;QUESTION: Why not work?
-  ;;(setq company-global-modes '(not erc-mode message-mode eshell-mode))
-  (setq company-selection-wrap-around t)
-  (add-hook 'emacs-lisp-mode-hook 'company-mode)
-  (add-hook 'emacs-go-mode-hook 'company-mode)
-  :ensure t
-  :config
-  (company-mode)
-  (setq company-idle-delay 0)
-  ;(setq company-global-modes '(not processing-mode text-mode)) ;; Not use company on those modes
-  (add-to-list 'company-backends 'company-elisp)
-  (add-to-list 'company-backends 'company-go)
-  (add-to-list 'company-backends 'company-dict)
+ :ensure t
+ :init
+ (setq company-selection-wrap-around t)
+ :config
+ (setq company-idle-delay 0)
+ (global-company-mode)
+ (customed-compnay-mode)
   :bind (:map company-search-map
               ("C-t" . company-search-toggle-filtering)
               ("TAB" . company-select-next)
@@ -153,7 +149,6 @@
               ("TAB" . company-select-next)
               ("<backtab>" . company-select-previous))
               ("RET" . company-complete))
-; TODO: preserve <RET>
 
 (use-package company-quickhelp
   :ensure t
@@ -161,14 +156,7 @@
   (setq company-quickhelp-delay 0.001)
   :after company)
 
-(defun customed-compnay-mode ()
-  "add all company-related modes"
-  (global-company-mode)
-  ; company-tng-mode must be load before company-quickhelp-mode,
-  ; otherwise, company-tng-mode doesn't work.
-  (company-tng-mode)
-  (company-quickhelp-mode))
-(add-hook 'after-init-hook 'customed-compnay-mode)
+;; (add-hook 'after-init-hook 'customed-compnay-mode)
 
 (use-package consult-eglot
     :ensure t)
@@ -191,6 +179,7 @@
   :ensure t
   :config
   (setq company-dict-dir (concat user-emacs-directory "dict/"))
+  (add-to-list 'company-backends 'company-dict)
   :bind (:map evil-insert-state-map
               ("C-x C-k" . company-dict))
 )
@@ -229,12 +218,15 @@
   :config
   (fcitx-aggressive-setup))
 
-(defun my/org-mode-setup ()
+(defun my/text-mode-hook()
+    (setq-local company-backends
+		'((company-dabbrev company-ispell :separate)
+		  company-files)))
+
+(defun my/org-mode-setup()
+  (my/text-mode-hook)
   (org-indent-mode)
-  (variable-pitch-mode 1)
-  (auto-fill-mode 0)
   (visual-line-mode 1)
-  (org-num-mode)
   (setq evil-auto-indent nil))
 
 (use-package org
@@ -265,19 +257,6 @@
   (my-leader-def "nf" 'org-roam-node-find)
   (my-leader-def "ni" 'org-roam-node-insert))
 
-(use-package org-bullets
-  :ensure t
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-
-;; Replace list hyphen with dot
-(font-lock-add-keywords 'org-mode
-                        '(("^ *\\([-]\\) "
-                          (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
-
 ;; Make sure org-indent face is available
 (require 'org-indent)
 
@@ -294,7 +273,24 @@
 (use-package magit
   :ensure t)
 
+;; ---- LSP ----
+;; Disable eldoc-mode
+(global-eldoc-mode -1)
+(define-key evil-normal-state-map (kbd "gs") 'xref-find-references)
+
 ;; ---- utilities ----
+(defun copy-from-osx ()
+  (shell-command-to-string "pbpaste"))
+
+(defun paste-to-osx (text &optional push)
+  (let ((process-connection-type nil))
+    (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+      (process-send-string proc text)
+      (process-send-eof proc))))
+
+(setq interprogram-cut-function 'paste-to-osx)
+(setq interprogram-paste-function 'copy-from-osx)
+
 (use-package orderless
   :ensure t
   :custom
