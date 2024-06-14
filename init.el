@@ -1,4 +1,4 @@
-
+(server-start)
 (setq inhibit-startup-message t)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -7,7 +7,7 @@
 (setq-default cursor-type 'bar)
 
 ;; Font size 14pt
-(set-face-attribute 'default nil :height 140)
+(set-face-attribute 'default nil :height 180)
 
 ;; Chinese configuration
 ;; See https://github.com/hick/emacs-chinese
@@ -50,27 +50,23 @@
 ; (straight-use-package 'use-package)
 ; (setq straight-use-package-by-default t)
 
-;; ---- Modus Theme ----
-;; Configure the Modus Themes' appearance
-(setq modus-themes-mode-line '(accented borderless)
-      modus-themes-bold-constructs t
-      modus-themes-italic-constructs t
-      modus-themes-fringes 'subtle
-      modus-themes-tabs-accented t
-      modus-themes-paren-match '(bold intense)
-      modus-themes-prompts '(bold intense)
-      modus-themes-org-blocks 'tinted-background
-      modus-themes-scale-headings t
-      modus-themes-region '(bg-only)
-      modus-themes-headings
-      '((1 . (rainbow overline background 1.4))
-        (2 . (rainbow background 1.3))
-        (3 . (rainbow bold 1.2))
-        (t . (semilight 1.1))))
-
-;; Load the dark theme by default
-(load-theme 'modus-vivendi t)
-
+;; ---- Theme ----
+(use-package doom-themes
+  :ensure t
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-one t)
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  ;; (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
 
 (use-package treesit-auto
   :ensure t
