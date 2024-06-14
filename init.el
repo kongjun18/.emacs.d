@@ -99,7 +99,10 @@
   :config
   (evil-mode 1)
   (with-eval-after-load 'evil-maps
-    (define-key evil-motion-state-map (kbd "RET") nil)))
+    (define-key evil-motion-state-map (kbd "RET") nil)
+    (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+    (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+    ))
 
 (use-package general
    :ensure t
