@@ -124,21 +124,18 @@
   (my-leader-def "cy" 'evilnc-copy-and-comment-lines)
   (my-leader-def "cs" 'evilnc-comment-box))
 
-
-
 ;; --- Company ---
 (defun customed-compnay-mode ()
   ; company-tng-mode must be load before company-quickhelp-mode,
   ; otherwise, company-tng-mode doesn't work.
   (company-tng-mode)
   (company-quickhelp-mode))
+
 (use-package company
  :ensure t
- :init
- (setq company-selection-wrap-around t)
  :config
  (setq company-idle-delay 0)
- (global-company-mode)
+ (setq company-selection-wrap-around t)
  (customed-compnay-mode)
   :bind (:map company-search-map
               ("C-t" . company-search-toggle-filtering)
@@ -150,13 +147,26 @@
               ("<backtab>" . company-select-previous))
               ("RET" . company-complete))
 
+(add-hook 'after-init-hook 'global-company-mode)
+;; Don't enable company-mode in below major modes, OPTIONAL
+(setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode))
+
+(defun toggle-company-ispell ()
+  (interactive)
+  (cond
+   ((memq 'company-ispell company-backends)
+    (setq company-backends (delete 'company-ispell company-backends))
+    (message "company-ispell disabled"))
+   (t
+    (add-to-list 'company-backends 'company-ispell)
+    (message "company-ispell enabled!"))))
+
 (use-package company-quickhelp
   :ensure t
   :init
   (setq company-quickhelp-delay 0.001)
   :after company)
 
-;; (add-hook 'after-init-hook 'customed-compnay-mode)
 
 (use-package consult-eglot
     :ensure t)
@@ -218,13 +228,17 @@
   :config
   (fcitx-aggressive-setup))
 
-(defun my/text-mode-hook()
-    (setq-local company-backends
-		'((company-dabbrev company-ispell :separate)
-		  company-files)))
-
+(defun my/text-mode-hook-setup ()
+  ;; make `company-backends' local is critcal
+  ;; or else, you will have completion in every major mode, that's very annoying!
+  (make-local-variable 'company-backends)
+  (add-to-list 'company-backends 'company-ispell)
+  (setq
+   company-ispell-dictionary (file-truename "~/.emacs.d/dict/word.dict")
+   ispell-complete-word-dict (file-truename "~/.emacs.d/dict/word.dict")))
+(add-hook 'text-mode-hook 'my/text-mode-hook-setup)
 (defun my/org-mode-setup()
-  (my/text-mode-hook)
+  (my/text-mode-hook-setup)
   (org-indent-mode)
   (visual-line-mode 1)
   (setq evil-auto-indent nil))
