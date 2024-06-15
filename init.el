@@ -5,6 +5,8 @@
 (global-display-line-numbers-mode 1)
 (setq-default cursor-type 'bar)
 
+;; Use timestamps in English
+(setq system-time-locale "C")
 ;; Font size 14pt
 (set-face-attribute 'default nil :height 180)
 
