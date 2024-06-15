@@ -97,8 +97,10 @@
   (setq evil-want-keybinding nil)
   (setq evil-want-C-u-scroll t)
   (setq evil-leader/in-all-states 1)
+  (setq evil-want-minibuffer t)
   :config
   (evil-mode 1)
+  (evil-set-undo-system 'undo-redo)
   (with-eval-after-load 'evil-maps
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
