@@ -264,6 +264,12 @@
   :custom
     (org-roam-directory "~/org")
     (org-roam-completion-everywhere t)
+    (org-id-link-to-org-use-id t)
+    (org-roam-capture-templates
+      '(("d" "default" plain
+      "\n%?\n\n----\n* References"
+      :if-new (file+head "${title}.org" "#+title: ${title}\n#+created: %U\n#+type: #idea\n#+status: #todo\n")
+      :unnarrowed t)))
   :bind (
 	:map org-mode-map
 	("C-M-i"    . completion-at-point))
