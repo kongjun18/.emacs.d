@@ -413,6 +413,25 @@
   :config
   (setq vertico-buffer-display-action '(display-buffer-at-bottom))
   (vertico-buffer-mode +1))
+(use-package diff-hl
+  :ensure t
+  :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
+         (magit-post-refresh . diff-hl-magit-post-refresh)
+         (dired-mode . diff-hl-dired-mode))
+  :config
+  (global-diff-hl-mode 1)
+  (global-diff-hl-show-hunk-mouse-mode 1))
+(use-package difftastic
+  :ensure t
+  :demand t
+  :bind (:map magit-blame-read-only-mode-map
+              ("D" . difftastic-magit-show)
+              ("S" . difftastic-magit-show))
+  :config
+  (eval-after-load 'magit-diff
+    '(transient-append-suffix 'magit-diff '(-1 -1)
+       [("D" "Difftastic diff (dwim)" difftastic-magit-diff)
+        ("S" "Difftastic show" difftastic-magit-show)])))
 (use-package marginalia
   :ensure t
   :config
