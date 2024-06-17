@@ -4,7 +4,7 @@
 (menu-bar-mode -1)
 (global-display-line-numbers-mode 1)
 (setq-default cursor-type 'bar)
-
+(setq delete-by-moving-to-trash t)
 ;; Use timestamps in English
 (setq system-time-locale "C")
 ;; Font size 14pt
