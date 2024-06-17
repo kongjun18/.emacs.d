@@ -432,6 +432,10 @@
     '(transient-append-suffix 'magit-diff '(-1 -1)
        [("D" "Difftastic diff (dwim)" difftastic-magit-diff)
         ("S" "Difftastic show" difftastic-magit-show)])))
+(use-package rg
+  :ensure t
+  :defer t)
+
 (use-package marginalia
   :ensure t
   :config
