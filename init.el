@@ -380,14 +380,6 @@
 (define-key evil-normal-state-map (kbd "gs") 'xref-find-references)
 
 ;; ---- utilities ----
-(defun copy-from-osx ()
-  (shell-command-to-string "pbpaste"))
-
-(defun paste-to-osx (text &optional push)
-  (let ((process-connection-type nil))
-    (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
-      (process-send-string proc text)
-      (process-send-eof proc))))
 ;; Save auto-save files to ~/.emacs.d/backups
 (setq backup-directory-alist
   `(("." . ,(concat user-emacs-directory "backups"))))
@@ -410,8 +402,6 @@
   :config
   (save-place-mode 1))
 
-(setq interprogram-cut-function 'paste-to-osx)
-(setq interprogram-paste-function 'copy-from-osx)
 
 (use-package orderless
   :ensure t
