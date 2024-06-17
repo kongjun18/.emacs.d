@@ -185,6 +185,9 @@
 
 (use-package consult-eglot
     :ensure t)
+(use-package eldoc-box
+  :ensure t
+  :hook (eglot-managed-mode . eldoc-box-hover-mode))
 (use-package eglot
   :after company
   :ensure t
