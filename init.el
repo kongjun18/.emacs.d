@@ -309,7 +309,10 @@
   (add-to-list 'company-backends 'company-ispell)
   (setq
    company-ispell-dictionary (file-truename "~/.emacs.d/dict/word.dict")
-   ispell-complete-word-dict (file-truename "~/.emacs.d/dict/word.dict")))
+   ispell-complete-word-dict (file-truename "~/.emacs.d/dict/word.dict"))
+   (flymake-aspell-setup)
+   (flymake-mode)
+  )
 (add-hook 'text-mode-hook 'my/text-mode-hook-setup)
 (defun my/org-mode-setup()
   (my/text-mode-hook-setup)
