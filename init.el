@@ -9,6 +9,16 @@
 (setq system-time-locale "C")
 ;; Font size 14pt
 (set-face-attribute 'default nil :height 180)
+;; GUI improvement based on OS
+(defconst IS-MAC (eq system-type 'darwin))
+(defconst IS-LINUX (memq system-type '(gnu gnu/linux gnu/kfreebsd berkeley-unix)))
+(defconst IS-WINDOWS (memq system-type '(cygwin windows-nt ms-dos)))
+(when IS-WINDOWS
+  (setq w32-use-native-image-API t))
+(unless IS-MAC
+  (setq command-line-ns-option-alist nil))
+(unless IS-LINUX
+  (setq command-line-x-option-alist nil))
 
 ;; Chinese configuration
 ;; See https://github.com/hick/emacs-chinese
