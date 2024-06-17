@@ -237,6 +237,19 @@
 ;   (define-key acm-mode-map [backtab] 'acm-select-prev))
 
 ;; ---- org-mode ----
+(use-package flymake
+  :ensure t
+  :config
+  (with-eval-after-load 'evil
+    (define-key evil-normal-state-map (kbd "g n") 'flymake-goto-next-error)
+    (define-key evil-normal-state-map (kbd "g N") 'flymake-goto-prev-error)))
+
+(use-package flymake-aspell
+  :ensure t
+  :config
+    (setq ispell-dictionary "en")
+    (setq ispell-program-name "aspell")
+    (setq ispell-silently-savep t))
 (use-package fcitx
   :ensure t
   ;; Only enable fcitx.el on Linux which not runs in SSH
