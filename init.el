@@ -326,6 +326,10 @@
   :config
   (setq org-ellipsis " ▾"
         org-hide-emphasis-markers t
+	org-return-follows-link t
+        org-mouse-1-follows-link t
+	org-use-sub-superscripts '{}
+	org-export-with-sub-superscripts nil
         ;; org-agenda
 	org-agenda-start-with-log-mode t
 	org-log-done 'time
