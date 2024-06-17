@@ -9,6 +9,7 @@
 (setq system-time-locale "C")
 ;; Font size 14pt
 (set-face-attribute 'default nil :height 180)
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 ;; GUI improvement based on OS
 (defconst IS-MAC (eq system-type 'darwin))
 (defconst IS-LINUX (memq system-type '(gnu gnu/linux gnu/kfreebsd berkeley-unix)))
