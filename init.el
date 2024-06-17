@@ -388,6 +388,27 @@
     (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
       (process-send-string proc text)
       (process-send-eof proc))))
+;; Save auto-save files to ~/.emacs.d/backups
+(setq backup-directory-alist
+  `(("." . ,(concat user-emacs-directory "backups"))))
+;; Show minor mode
+(use-package minions
+  :ensure t
+  :config
+  (minions-mode 1))
+;; Save command history
+(use-package savehist
+  :ensure t
+  :config
+  (savehist-mode 1))
+(use-package paren
+  :ensure t
+  :config
+  (show-paren-mode 1))
+;; Resotre to previous place
+(use-package saveplace
+  :config
+  (save-place-mode 1))
 
 (setq interprogram-cut-function 'paste-to-osx)
 (setq interprogram-paste-function 'copy-from-osx)
