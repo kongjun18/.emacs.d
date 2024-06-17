@@ -401,7 +401,18 @@
 (use-package vertico
   :ensure t
   :config
+  (setq vertico-cycle t)
   (vertico-mode 1))
+(use-package vertico-directory
+  :ensure nil
+  :after vertico
+  :bind ( :map vertico-map
+          ("<backspace>" . vertico-directory-delete-char)))
+(use-package vertico-buffer
+  :ensure nil
+  :config
+  (setq vertico-buffer-display-action '(display-buffer-at-bottom))
+  (vertico-buffer-mode +1))
 (use-package marginalia
   :ensure t
   :config
@@ -446,6 +457,43 @@
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<") ;; "C-+"
 )
+(defun mp/xref-which-function (file pos)
+  "Get function name from a marker in a file."
+  (with-current-buffer
+	  (find-file-noselect file)
+    (xref--goto-char pos)
+    (which-function)))
+
+(defun mp/xref-put-function-name-work ()
+  "Put function name before all items."
+  (while (not (eobp))                   ; while not end of buffer
+    (forward-line 1)
+    (when-let ((item (xref--item-at-point)))
+      (let* ((location (xref-item-location item))
+             (file (xref-location-group location))
+             (marker (xref-location-marker location))
+             (function-name (mp/xref-which-function file marker))
+		     (ov (make-overlay (line-beginning-position) (1+ (line-beginning-position)) nil t))
+		     (text (format "%30s │" (or function-name ""))))
+        (overlay-put ov 'before-string
+                     (propertize text 'face 'font-lock-string-face))
+	    (overlay-put ov 'evaporate t)))))
+
+(defun mp/xref-put-function-name (&optional arg)
+  "Put function name before items in current group. If called with
+`universal-argument', apply to the entire buffer."
+  (interactive "P")
+  (save-excursion
+    (if arg
+        (progn
+          (goto-char (point-min))
+          (mp/xref-put-function-name-work))
+      (or (xref--search-property 'xref-group)
+          (goto-char (point-max)))
+      (let ((max (point)))
+        (xref--search-property 'xref-group t)
+        (with-restriction (point) max
+          (mp/xref-put-function-name-work))))))
 
 ;; ---- Obsidian ----
 (use-package obsidian
