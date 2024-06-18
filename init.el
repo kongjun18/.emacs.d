@@ -82,8 +82,12 @@
 
 (use-package treesit-auto
   :ensure t
-  :demand t
   :config
+  (setq my-go-tsauto-config
+      (make-treesit-auto-recipe
+       :lang 'go
+       :revision "v0.20.0"))
+(add-to-list 'treesit-auto-recipe-list my-go-tsauto-config)
   (global-treesit-auto-mode))
 
 (use-package which-key
