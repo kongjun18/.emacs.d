@@ -145,6 +145,12 @@ apps are not started from a shell."
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
     (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+    ;; disable C-n/C-p in minibufers
+    (dolist (map '(evil-motion-state-map
+                   evil-insert-state-map
+                   evil-emacs-state-map))
+	    (define-key (eval map) "\C-n" nil)
+	    (define-key (eval map) "\C-p" nil))
     ))
 
 (use-package general
