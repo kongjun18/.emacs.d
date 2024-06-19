@@ -135,6 +135,11 @@ apps are not started from a shell."
   :config
   (evil-mode 1)
   (evil-set-undo-system 'undo-redo)
+  (defadvice evil-inner-word (around underscore-as-word activate)
+  (let ((table (copy-syntax-table (syntax-table))))
+    (modify-syntax-entry ?_ "w" table)
+    (with-syntax-table table
+      ad-do-it)))
   (with-eval-after-load 'evil-maps
     (define-key evil-motion-state-map (kbd "RET") nil)
     (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
