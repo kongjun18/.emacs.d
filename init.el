@@ -10,6 +10,25 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 ;;Font size 14pt
 (set-face-attribute 'default nil :height 140)
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable to match
+that used by the user's shell.
+
+This is particularly useful under Mac OS X and macOS, where GUI
+apps are not started from a shell."
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string
+			  "[ \t\n]*$" "" (shell-command-to-string
+					  "$SHELL --login -c 'echo $PATH'"
+						    ))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+(defun tune-execpath()
+    (set-exec-path-from-shell-PATH)
+    (setenv "PATH" (concat (getenv "PATH") ":~/.local/share/nvim/mason/bin"))
+    (setq exec-path (append exec-path '("~/.local/share/nvim/mason/bin")))
+)
+(tune-execpath)
 ;; GUI improvement based on OS
 (defconst IS-MAC (eq system-type 'darwin))
 (defconst IS-LINUX (memq system-type '(gnu gnu/linux gnu/kfreebsd berkeley-unix)))
