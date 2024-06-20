@@ -525,6 +525,8 @@ apps are not started from a shell."
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<") ;; "C-+"
+  (add-to-list 'consult-preview-allowed-hooks 'global-display-line-numbers-mode)
+  (add-to-list 'consult-preview-allowed-hooks 'global-treesit-auto-mode)
 )
 (defun mp/xref-which-function (file pos)
   "Get function name from a marker in a file."
