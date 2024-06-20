@@ -528,43 +528,18 @@ apps are not started from a shell."
   (add-to-list 'consult-preview-allowed-hooks 'global-display-line-numbers-mode)
   (add-to-list 'consult-preview-allowed-hooks 'global-treesit-auto-mode)
 )
-(defun mp/xref-which-function (file pos)
-  "Get function name from a marker in a file."
-  (with-current-buffer
-	  (find-file-noselect file)
-    (xref--goto-char pos)
-    (which-function)))
-
-(defun mp/xref-put-function-name-work ()
-  "Put function name before all items."
-  (while (not (eobp))                   ; while not end of buffer
-    (forward-line 1)
-    (when-let ((item (xref--item-at-point)))
-      (let* ((location (xref-item-location item))
-             (file (xref-location-group location))
-             (marker (xref-location-marker location))
-             (function-name (mp/xref-which-function file marker))
-		     (ov (make-overlay (line-beginning-position) (1+ (line-beginning-position)) nil t))
-		     (text (format "%30s │" (or function-name ""))))
-        (overlay-put ov 'before-string
-                     (propertize text 'face 'font-lock-string-face))
-	    (overlay-put ov 'evaporate t)))))
-
-(defun mp/xref-put-function-name (&optional arg)
-  "Put function name before items in current group. If called with
-`universal-argument', apply to the entire buffer."
-  (interactive "P")
-  (save-excursion
-    (if arg
-        (progn
-          (goto-char (point-min))
-          (mp/xref-put-function-name-work))
-      (or (xref--search-property 'xref-group)
-          (goto-char (point-max)))
-      (let ((max (point)))
-        (xref--search-property 'xref-group t)
-        (with-restriction (point) max
-          (mp/xref-put-function-name-work))))))
+(use-package citre
+  :ensure t
+  :defer t
+  :init
+  ;; This is needed in `:init' block for lazy load to work.
+  (require 'citre-config)
+  ;; Bind your frequently used commands.  Alternatively, you can define them
+  ;; in `citre-mode-map' so you can only use them when `citre-mode' is enabled.
+  (global-set-key (kbd "C-]") 'citre-jump)
+  :config
+  (setq
+   citre-default-create-tags-file-location 'global-cache))
 
 ;; ---- Obsidian ----
 (use-package obsidian
