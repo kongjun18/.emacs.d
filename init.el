@@ -131,11 +131,12 @@ apps are not started from a shell."
 (use-package evil
   :ensure t
   :init
-  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  ;; evil-collection relies on this config
+  (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
+
   (setq evil-want-C-u-scroll t)
   (setq evil-leader/in-all-states 1)
-  (setq evil-want-minibuffer t)
   :config
   (evil-mode 1)
   (evil-set-undo-system 'undo-redo)
@@ -144,18 +145,8 @@ apps are not started from a shell."
     (modify-syntax-entry ?_ "w" table)
     (with-syntax-table table
       ad-do-it)))
-  (with-eval-after-load 'evil-maps
-    (define-key evil-motion-state-map (kbd "RET") nil)
-    (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
-    (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
-    ;; disable C-n/C-p in minibufers
-    (dolist (map '(evil-motion-state-map
-                   evil-insert-state-map
-                   evil-emacs-state-map))
-	    (define-key (eval map) "\C-n" nil)
-	    (define-key (eval map) "\C-p" nil))
-    ))
-
+  ;; (with-eval-after-load 'evil-maps
+  )
 (use-package general
    :ensure t
 )
@@ -167,6 +158,8 @@ apps are not started from a shell."
 (use-package evil-collection
   :after evil
   :ensure t
+  :custom
+  (evil-collection-setup-minibuffer t)
   :config
   (evil-collection-init))
 
