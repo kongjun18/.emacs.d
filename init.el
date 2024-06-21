@@ -170,6 +170,8 @@ apps are not started from a shell."
   :config
   (evil-collection-init))
 
+
+(my-leader-def "fj" 'evil-collection-consult-jump-list)
 (use-package evil-nerd-commenter
   :ensure t
   :config
