@@ -84,6 +84,7 @@ apps are not started from a shell."
 
 ;; ---- Theme ----
 (use-package all-the-icons
+  :ensure t
   :if (display-graphic-p))
 
 (use-package doom-themes
