@@ -180,6 +180,11 @@ apps are not started from a shell."
   (my-leader-def "cy" 'evilnc-copy-and-comment-lines)
   (my-leader-def "cs" 'evilnc-comment-box))
 
+(use-package rainbow-delimiters
+    :ensure t
+    :hook
+    (prog-mode . rainbow-delimiters-mode))
+
 ;; --- Company ---
 (defun customed-compnay-mode ()
   ; company-tng-mode must be load before company-quickhelp-mode,
