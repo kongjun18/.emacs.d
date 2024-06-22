@@ -437,6 +437,10 @@ apps are not started from a shell."
 (define-key evil-normal-state-map (kbd "gs") 'xref-find-references)
 
 ;; ---- utilities ----
+(use-package saveplace
+  :ensure t
+  :hook (after-init . save-place-mode))
+
 (use-package treemacs
   :ensure t
   :defer t
