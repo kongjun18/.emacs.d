@@ -248,8 +248,7 @@ apps are not started from a shell."
 (use-package eglot
   :after company
   :ensure t
-  :config
-  (add-hook 'prog-mode 'eglot-ensure))
+  :hook ((prog-mode . eglot-ensure)))
 (defun project-find-go-module (dir)
   (when-let ((root (locate-dominating-file dir "go.mod")))
     (cons 'go-module root)))
