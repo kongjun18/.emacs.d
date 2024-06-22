@@ -145,8 +145,15 @@ apps are not started from a shell."
     (modify-syntax-entry ?_ "w" table)
     (with-syntax-table table
       ad-do-it)))
-  ;; (with-eval-after-load 'evil-maps
-  )
+  (with-eval-after-load 'evil-maps
+    (defun evil-paste-from-clipboard()
+      (interactive)
+      (evil-paste-from-register ?+))
+    (define-key evil-insert-state-map (kbd "C-v") 'evil-paste-from-clipboard)
+    (define-key evil-insert-state-map (kbd "C-S-v") 'evil-paste-from-clipboard)
+    (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+    (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)))
+
 (use-package general
    :ensure t
 )
