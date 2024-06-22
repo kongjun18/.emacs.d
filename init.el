@@ -86,6 +86,18 @@ apps are not started from a shell."
 (use-package all-the-icons
   :ensure t
   :if (display-graphic-p))
+(use-package doom-modeline
+    :ensure t
+    :custom
+    (doom-modeline-buffer-file-name-style 'truncate-with-project)
+    (doom-modeline-icon t)
+    (doom-modeline-major-mode-icon nil)
+    (doom-modeline-minor-modes nil)
+    :hook
+    (after-init . doom-modeline-mode)
+    :config
+    (line-number-mode 0)
+    (column-number-mode 0))
 
 (use-package doom-themes
   :ensure t
