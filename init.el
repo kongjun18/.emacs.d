@@ -410,11 +410,20 @@ apps are not started from a shell."
 	org-use-sub-superscripts '{}
 	org-export-with-sub-superscripts nil
         ;; org-agenda
+	org-agenda-files (quote ("~/org"))
 	org-agenda-start-with-log-mode t
 	org-log-done 'time
 	org-log-into-drawer t
-	))
-
+	org-use-fast-todo-selection t
+	org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "|" "DONE" "WAITING" "INACTIVE" "CANCELED"))
+	org-capture-templates
+       '(("d" "Diary" entry (file+datetree "~/org/diary.org")
+	  "* \n%U\n%?")))
+  (with-eval-after-load 'org
+    (defun my/org-capture-daily ()
+   (interactive)
+   (org-capture nil "d"))
+    (define-key evil-normal-state-map (kbd "C-c C-d") 'my/org-capture-daily)))
 (use-package org-roam
   :ensure t
   :custom
