@@ -196,48 +196,87 @@ apps are not started from a shell."
     :hook
     (prog-mode . rainbow-delimiters-mode))
 
-;; --- Company ---
-(defun customed-compnay-mode ()
-  ; company-tng-mode must be load before company-quickhelp-mode,
-  ; otherwise, company-tng-mode doesn't work.
-  (company-tng-mode)
-  (company-quickhelp-mode))
-
-(use-package company
- :ensure t
- :config
- (setq company-idle-delay 0)
- (setq company-selection-wrap-around t)
- (customed-compnay-mode)
-  :bind (:map company-search-map
-              ("C-t" . company-search-toggle-filtering)
-              ("TAB" . company-select-next)
-              ("<backtab>" . company-select-previous)
-              ("RET" . company-complete)
-    :map company-active-map
-              ("TAB" . company-select-next)
-              ("<backtab>" . company-select-previous))
-              ("RET" . company-complete))
-
-(add-hook 'after-init-hook 'global-company-mode)
-;; Don't enable company-mode in below major modes, OPTIONAL
-(setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode))
-
-(defun toggle-company-ispell ()
-  (interactive)
-  (cond
-   ((memq 'company-ispell company-backends)
-    (setq company-backends (delete 'company-ispell company-backends))
-    (message "company-ispell disabled"))
-   (t
-    (add-to-list 'company-backends 'company-ispell)
-    (message "company-ispell enabled!"))))
-
-(use-package company-quickhelp
+;; --- corfu ---
+;; Configure Tempel
+(use-package tempel
+  :ensure t
+  ;; :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+  ;;        ("M-*" . tempel-insert))
+)
+(use-package tempel-collection
+  :ensure t)
+(use-package corfu
+  :ensure t
+  ;; Optional customizations
+  :custom
+  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto-prefix 3)          ;; Trigger completion when type 2 char
+  (corfu-auto t)                 ;; Enable auto completion
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (corfu-preselect 'prompt)      ;; Preselect the prompt
+  ;; Enable Corfu only for certain modes.
+  :hook ((prog-mode . corfu-mode)
+         (shell-mode . corfu-mode)
+         (eshell-mode . corfu-mode))
+  :bind (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous)
+	("RET" . corfu-complete))
+  :config
+  (global-corfu-mode)
+  ;; Option 1: Specify explicitly to use Orderless for Eglot
+(setq completion-category-overrides '((eglot (styles orderless))
+                                      (eglot-capf (styles orderless))))
+;; Option 2: Undo the Eglot modification of completion-category-defaults
+(with-eval-after-load 'eglot
+   (setq completion-category-defaults nil))
+;; Enable cache busting, depending on if your server returns
+;; sufficiently many candidates in the first place.
+(advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+(setq-default eglot-workspace-configuration
+      '((haskell (maxCompletions . 200))))
+(defun my/eglot-capf ()
+  (setq-local completion-at-point-functions
+              (list (cape-capf-super
+                     #'eglot-completion-at-point
+                     #'tempel-expand))))
+(add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
+  )
+;; Add extensions
+(use-package cape
   :ensure t
   :init
-  (setq company-quickhelp-delay 0.001)
-  :after company)
+  (add-hook 'completion-at-point-functions #'cape-keyword)
+  (add-hook 'completion-at-point-functions #'cape-dict))
+  ;; (add-hook 'completion-at-point-functions #'cape-file))
+
+;; A few more useful configurations...
+(use-package emacs
+  :init
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  (setq tab-always-indent 'complete)
+  ;; Emacs 30 and newer: Disable Ispell completion function. As an alternative,
+  ;; try `cape-dict'.
+  (setq text-mode-ispell-word-completion nil)
+  ;; Emacs 28 and newer: Hide commands in M-x which do not apply to the current
+  ;; mode.  Corfu commands are hidden, since they are not used via M-x. This
+  ;; setting is useful beyond Corfu.
+  (setq read-extended-command-predicate #'command-completion-default-include-p))
+
+;; Enable corfu in minibuffer(evil cmdline) 
+(defun corfu-enable-always-in-minibuffer ()
+  "Enable Corfu in the minibuffer if Vertico/Mct are not active."
+  (unless (or (bound-and-true-p mct--active)
+              (bound-and-true-p vertico--input)
+              (eq (current-local-map) read-passwd-map))
+    ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
+    (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
+                corfu-popupinfo-delay nil)
+    (corfu-mode 1)))
+(add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
 
 
 (use-package consult-eglot
@@ -246,7 +285,6 @@ apps are not started from a shell."
   :ensure t
   :hook (eglot-managed-mode . eldoc-box-hover-mode))
 (use-package eglot
-  :after company
   :ensure t
   :hook ((prog-mode . eglot-ensure)))
 (defun project-find-go-module (dir)
@@ -258,15 +296,6 @@ apps are not started from a shell."
 (defun eglot-format-buffer-on-save ()
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
 (add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
-
-(use-package company-dict
-  :ensure t
-  :config
-  (setq company-dict-dir (concat user-emacs-directory "dict/"))
-  (add-to-list 'company-backends 'company-dict)
-  :bind (:map evil-insert-state-map
-              ("C-x C-k" . company-dict))
-)
 
 ;; ---- lsp-bridge ----
 (use-package yasnippet
@@ -359,16 +388,10 @@ apps are not started from a shell."
   (fcitx-aggressive-setup))
 
 (defun my/text-mode-hook-setup ()
-  ;; make `company-backends' local is critcal
-  ;; or else, you will have completion in every major mode, that's very annoying!
-  (make-local-variable 'company-backends)
-  (add-to-list 'company-backends 'company-ispell)
   (setq
-   company-ispell-dictionary (file-truename "~/.emacs.d/dict/word.dict")
    ispell-complete-word-dict (file-truename "~/.emacs.d/dict/word.dict"))
    (flymake-aspell-setup)
-   (flymake-mode)
-  )
+   (flymake-mode))
 (add-hook 'text-mode-hook 'my/text-mode-hook-setup)
 (defun my/org-mode-setup()
   (my/text-mode-hook-setup)
