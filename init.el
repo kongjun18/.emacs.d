@@ -438,8 +438,10 @@ apps are not started from a shell."
 
 ;; ---- utilities ----
 (use-package saveplace
-  :ensure t
+  :ensure nil
   :hook (after-init . save-place-mode))
+(savehist-mode t)
+(recentf-mode t)
 
 (use-package treemacs
   :ensure t
