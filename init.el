@@ -591,7 +591,7 @@ apps are not started from a shell."
          (magit-post-refresh . diff-hl-magit-post-refresh)
          (dired-mode . diff-hl-dired-mode))
   :config
-  (global-diff-hl-mode 1)
+  (global-diff-fly-hl-mode 1)
   (global-diff-hl-show-hunk-mouse-mode 1))
 (use-package difftastic
   :ensure t
