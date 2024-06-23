@@ -414,14 +414,18 @@ apps are not started from a shell."
 	org-export-with-sub-superscripts nil
         ;; org-agenda
 	org-agenda-files (quote ("~/org"))
+	org-agenda-diary-file (file-truename "~/org/diary.org")
+	org-default-notes-file "~/org/refile.org"
 	org-agenda-start-with-log-mode t
 	org-log-done 'time
 	org-log-into-drawer t
 	org-use-fast-todo-selection t
 	org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "|" "DONE" "WAITING" "INACTIVE" "CANCELED"))
 	org-capture-templates
-       '(("d" "Diary" entry (file+datetree "~/org/diary.org")
-	  "* \n%U\n%?")))
+	'(("t" "todo" entry (file org-default-notes-file)
+	  "* TODO %?\n%u\n%a\n")
+	  ("d" "Diary" entry (file+datetree "~/org/diary.org")
+	  "* %U\n%?")))
   (with-eval-after-load 'org
     (defun my/org-capture-daily ()
    (interactive)
