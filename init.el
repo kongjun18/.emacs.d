@@ -721,7 +721,10 @@ apps are not started from a shell."
   (global-set-key (kbd "C-]") 'citre-jump)
   :config
   (setq
-   citre-default-create-tags-file-location 'global-cache))
+   citre-default-create-tags-file-location 'global-cache
+   citre-peek-auto-restore-after-jump nil
+   citre-peek-fill-fringe nil
+   citre-peek-use-dashes-as-horizontal-border t))
 
 ;; ---- Obsidian ----
 (use-package obsidian
