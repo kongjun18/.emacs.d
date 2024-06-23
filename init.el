@@ -173,7 +173,10 @@ apps are not started from a shell."
 (general-create-definer my-leader-def
     :states '(normal visual emacs)
     :prefix "SPC")
-
+(use-package evil-surround
+  :ensure t
+  :config
+  (global-evil-surround-mode 1))
 (use-package evil-collection
   :after evil
   :ensure t
