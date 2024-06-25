@@ -488,6 +488,12 @@ apps are not started from a shell."
 (define-key evil-normal-state-map (kbd "gs") 'xref-find-references)
 
 ;; ---- utilities ----
+;; Persistent undo
+(use-package undohist
+  :ensure t
+  :init
+  (autoload 'undohist-initialize "undohist")
+  (undohist-initialize))
 (use-package saveplace
   :ensure nil
   :hook (after-init . save-place-mode))
