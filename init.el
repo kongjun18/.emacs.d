@@ -397,10 +397,11 @@ apps are not started from a shell."
    (flymake-mode))
 (add-hook 'text-mode-hook 'my/text-mode-hook-setup)
 (defun my/org-mode-setup()
+  (setq evil-auto-indent nil)
   (my/text-mode-hook-setup)
   (org-indent-mode)
   (visual-line-mode 1)
-  (setq evil-auto-indent nil))
+  (org-appear-mode))
 
 (use-package org
   :hook (
@@ -431,6 +432,12 @@ apps are not started from a shell."
    (interactive)
    (org-capture nil "d"))
     (define-key evil-normal-state-map (kbd "C-c C-d") 'my/org-capture-daily)))
+(use-package org-appear
+  :ensure t
+  :config
+  (setq org-hide-emphasis-markers t
+	org-appear-autolinks t))
+
 (use-package org-roam
   :ensure t
   :custom
