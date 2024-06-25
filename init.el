@@ -440,7 +440,10 @@ apps are not started from a shell."
   :config
   (setq org-hide-emphasis-markers t
 	org-appear-autolinks t))
-
+(use-package iscroll
+  :ensure t
+  :diminish iscroll-mode
+  :hook ((org-mode markdown-mode) . iscroll-mode))
 (use-package org-roam
   :ensure t
   :custom
