@@ -653,15 +653,21 @@ apps are not started from a shell."
   :config
   (setq vertico-buffer-display-action '(display-buffer-at-bottom))
   (vertico-buffer-mode +1))
-(use-package diff-hl
+
+(use-package git-gutter
   :ensure t
-  :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
-         (magit-post-refresh . diff-hl-magit-post-refresh)
-         (dired-mode . diff-hl-dired-mode))
   :config
-  (global-diff-hl-mode 1)
-  (diff-hl-flydiff-mode 1)
-  (global-diff-hl-show-hunk-mouse-mode 1))
+    (global-git-gutter-mode t)
+    (with-eval-after-load 'evil
+	(define-key evil-normal-state-map (kbd "[c") 'git-gutter:previous-hunk)
+	(define-key evil-normal-state-map (kbd "]c") 'git-gutter:next-hunk)
+	(define-key evil-normal-state-map (kbd "ghr") 'git-gutter:revert-hunk)
+	(define-key evil-normal-state-map (kbd "ghs") 'git-gutter:stage-hunk)))
+(custom-set-variables
+  '(git-gutter:modified-sign "┃")
+  '(git-gutter:added-sign "┃")
+  '(git-gutter:deleted-sign "_"))
+
 (use-package difftastic
   :ensure t
   :demand t
