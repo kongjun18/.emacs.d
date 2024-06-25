@@ -410,6 +410,7 @@ apps are not started from a shell."
 	 (org-mode . my/org-mode-setup))
   :config
   (setq org-ellipsis " ▾"
+	org-startup-indented t
         org-hide-emphasis-markers t
 	org-return-follows-link t
         org-mouse-1-follows-link t
