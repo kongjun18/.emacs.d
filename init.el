@@ -286,8 +286,6 @@ apps are not started from a shell."
 (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
 
 
-(use-package consult-eglot
-    :ensure t)
 (use-package eldoc-box
   :ensure t
   :hook (eglot-managed-mode . eldoc-box-hover-mode))
