@@ -215,8 +215,8 @@ apps are not started from a shell."
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto-prefix 3)          ;; Trigger completion when type 2 char
   (corfu-auto t)                 ;; Enable auto completion
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
   (corfu-preselect 'prompt)      ;; Preselect the prompt
+  (corfu-popupinfo-delay '(0.0 . 0.0))
   ;; Enable Corfu only for certain modes.
   :hook ((prog-mode . corfu-mode)
          (shell-mode . corfu-mode)
@@ -229,6 +229,7 @@ apps are not started from a shell."
 	("RET" . corfu-complete))
   :config
   (global-corfu-mode)
+  (corfu-popupinfo-mode)
   ;; Option 1: Specify explicitly to use Orderless for Eglot
 (setq completion-category-overrides '((eglot (styles orderless))
                                       (eglot-capf (styles orderless))))
