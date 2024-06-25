@@ -247,15 +247,17 @@ apps are not started from a shell."
               (list (cape-capf-super
                      #'eglot-completion-at-point
                      #'tempel-expand))))
-(add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
-  )
+(add-hook 'eglot-managed-mode-hook #'my/eglot-capf))
+
+
 ;; Add extensions
 (use-package cape
   :ensure t
+  :custom 
+  (cape-dict-file (file-truename "~/.emacs.d/dict/word.dict"))
   :init
-  (add-hook 'completion-at-point-functions #'cape-keyword)
-  (add-hook 'completion-at-point-functions #'cape-dict))
-  ;; (add-hook 'completion-at-point-functions #'cape-file))
+  (add-hook 'completion-at-point-functions #'cape-dict)
+  (add-hook 'completion-at-point-functions #'cape-file))
 
 ;; A few more useful configurations...
 (use-package emacs
