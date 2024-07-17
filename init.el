@@ -409,7 +409,7 @@ apps are not started from a shell."
   :hook (
 	 (org-mode . my/org-mode-setup))
   :config
-  (setq org-ellipsis " ▾"
+  (setq 
 	org-startup-indented t
         org-hide-emphasis-markers t
 	org-return-follows-link t
@@ -466,18 +466,60 @@ apps are not started from a shell."
   (my-leader-def "nf" 'org-roam-node-find)
   (my-leader-def "ni" 'org-roam-node-insert))
 
-;; Make sure org-indent face is available
-(require 'org-indent)
+;; ;; Make sure org-indent face is available
+;; (require 'org-indent)
 
-;; Ensure that anything that should be fixed-pitch in Org files appears that way
-(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-(set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
-(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+;; ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+;; (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+;; (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+;; (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+;; (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+;; (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+;; (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+;; (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
 
+(use-package org-modern
+  :ensure t
+  :after org
+  :config
+    ;; Add frame borders and window dividers
+    (modify-all-frames-parameters
+    '((right-divider-width . 40)
+    (internal-border-width . 40)))
+    (dolist (face '(window-divider
+		    window-divider-first-pixel
+		    window-divider-last-pixel))
+    (face-spec-reset-face face)
+    (set-face-foreground face (face-attribute 'default :background)))
+    (set-face-background 'fringe (face-attribute 'default :background))
+
+    (setq
+    ;; Edit settings
+    org-auto-align-tags nil
+    org-tags-column 0
+    org-catch-invisible-edits 'show-and-error
+    org-special-ctrl-a/e t
+    org-insert-heading-respect-content t
+
+    ;; Org styling, hide markup etc.
+    org-hide-emphasis-markers t
+    org-pretty-entities t
+    org-modern-star 'replace
+
+    ;; Agenda styling
+    org-agenda-tags-column 0
+    org-agenda-block-separator ?─
+    org-agenda-time-grid
+    '((daily today require-timed)
+    (800 1000 1200 1400 1600 1800 2000)
+    " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+    org-agenda-current-time-string
+    "◀── now ─────────────────────────────────────────────────")
+
+    ;; Ellipsis styling
+    (setq org-ellipsis "…")
+    (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
+  (add-hook 'org-mode-hook #'org-modern-mode))
 ;; ---- magit ----
 (use-package magit
   :ensure t)
