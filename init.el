@@ -8,6 +8,9 @@
 ;; Use timestamps in English
 (setq system-time-locale "C")
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
+;; Solve the problem of Chinese input method get struck
+;; See https://emacs-china.org/t/emacs/21861/8
+(setq inhibit-compacting-font-caches t)
 ;;Font size 14pt
 (set-face-attribute 'default nil :height 140)
 (defun set-exec-path-from-shell-PATH ()
