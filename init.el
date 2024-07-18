@@ -172,6 +172,8 @@ apps are not started from a shell."
     (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
     (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)))
 
+(use-package goto-chg
+  :ensure t)
 (use-package general
    :ensure t
 )
