@@ -692,6 +692,15 @@ apps are not started from a shell."
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
+(use-package pinyinlib
+  :ensure t
+  :after orderless
+  :autoload pinyinlib-build-regexp-string
+  :init
+  (defun completion--regex-pinyin (str)
+    (orderless-regexp (pinyinlib-build-regexp-string str)))
+  (add-to-list 'orderless-matching-styles 'completion--regex-pinyin))
+
 (use-package vertico
   :ensure t
   :config
