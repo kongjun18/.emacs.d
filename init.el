@@ -705,7 +705,12 @@ apps are not started from a shell."
   :ensure t
   :config
   (setq vertico-cycle t)
-  (vertico-mode 1))
+  (vertico-mode 1)
+  :bind ( :map vertico-map
+        ("TAB" . vertico-next)
+        ([tab] . vertico-next)
+        ("S-TAB" . vertico-previous)
+        ([backtab] . vertico-previous)))
 (use-package vertico-directory
   :ensure nil
   :after vertico
