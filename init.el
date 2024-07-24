@@ -261,7 +261,7 @@ apps are not started from a shell."
 ;; Add extensions
 (use-package cape
   :ensure t
-  :custom 
+  :custom
   (cape-dict-file (file-truename "~/.emacs.d/dict/word.dict"))
   :init
   (add-hook 'completion-at-point-functions #'cape-dict)
@@ -281,7 +281,7 @@ apps are not started from a shell."
   ;; setting is useful beyond Corfu.
   (setq read-extended-command-predicate #'command-completion-default-include-p))
 
-;; Enable corfu in minibuffer(evil cmdline) 
+;; Enable corfu in minibuffer(evil cmdline)
 (defun corfu-enable-always-in-minibuffer ()
   "Enable Corfu in the minibuffer if Vertico/Mct are not active."
   (unless (or (bound-and-true-p mct--active)
@@ -323,31 +323,39 @@ apps are not started from a shell."
 (use-package go-mode
   :ensure t)
 
-; (use-package lsp-bridge
-;   :straight '(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
-;             :files (:defaults "*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources")
-;             :build (:not compile))
-;   :init
-;   (setq acm-enable-preview t)
-;   (global-lsp-bridge-mode)
-;   :config
-;   (define-key acm-mode-map [tab] 'acm-select-next)
-;   (define-key acm-mode-map [backtab] 'acm-select-prev))
-
 ;; ---- org-mode ----
-(use-package flymake
+(use-package flycheck-aspell
   :ensure t
   :config
-  (with-eval-after-load 'evil
-    (define-key evil-normal-state-map (kbd "g n") 'flymake-goto-next-error)
-    (define-key evil-normal-state-map (kbd "g N") 'flymake-goto-prev-error)))
+  (setq
+    ispell-complete-word-dict (file-truename "~/.emacs.d/dict/word.dict")
+    ispell-dictionary "en"
+    ispell-program-name "aspell"
+    ispell-silently-savep t)
+    (add-to-list 'flycheck-checkers 'markdown-aspell-dynamic)
+    ;; Because Aspell does not support Org syntax, the user has
+    ;; to define a checker with the desired flags themselves.
+  (flycheck-aspell-define-checker "org"
+    "Org" ("--add-filter" "url")
+    (org-mode))
+  (add-to-list 'flycheck-checkers 'org-aspell-dynamic))
 
-(use-package flymake-aspell
+(use-package flycheck
   :ensure t
   :config
-    (setq ispell-dictionary "en")
-    (setq ispell-program-name "aspell")
-    (setq ispell-silently-savep t))
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (with-eval-after-load 'evil
+    (define-key evil-normal-state-map (kbd "g n") 'flycheck-next-error)
+    (define-key evil-normal-state-map (kbd "g N") 'flycheck-next-error))
+;; Adjust margins and fringe widths…
+(defun my/set-flycheck-margins ()
+  (setq left-fringe-width 30 right-fringe-width 8
+        left-margin-width 1 right-margin-width 0)
+  (flycheck-refresh-fringes-and-margins))
+
+;; …every time Flycheck is activated in a new buffer
+(add-hook 'flycheck-mode-hook #'my/set-flycheck-margins)
+  )
 
 (defun font-installed-p (font-name)
   "Check if font with FONT-NAME is available."
@@ -400,16 +408,9 @@ apps are not started from a shell."
   :config
   (fcitx-aggressive-setup))
 
-(defun my/text-mode-hook-setup ()
-  (setq
-   ispell-complete-word-dict (file-truename "~/.emacs.d/dict/word.dict"))
-   (flymake-aspell-setup)
-   (flymake-mode))
-(add-hook 'text-mode-hook 'my/text-mode-hook-setup)
 (defun my/org-mode-setup()
   (setq evil-auto-indent nil)
   (my/text-mode-hook-setup)
-  (org-indent-mode)
   (visual-line-mode 1)
   (org-appear-mode))
 
@@ -417,7 +418,7 @@ apps are not started from a shell."
   :hook (
 	 (org-mode . my/org-mode-setup))
   :config
-  (setq 
+  (setq
 	org-startup-indented t
         org-hide-emphasis-markers t
 	org-return-follows-link t
